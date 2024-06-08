@@ -29,28 +29,4 @@ module.exports = class FolderController{
             })
         }
     }
-
-    static async show(req, res){
-
-        const UserId = req.body.UserId;
-
-        const user = await User.findOne({where: {id: UserId}});
-
-        if(!user){
-            res.json({
-                message: "Usuário não encontrado."
-            });
-            return;
-        }
-
-        try {
-            const folders = await Folder.findAll({where: {UserId: UserId}}, {raw: true});
-            res.json(folders);
-        
-        } catch (error) {
-            res.json({
-                message: "Erro ao pegar pastas."
-            });
-        }    
-    }
 }

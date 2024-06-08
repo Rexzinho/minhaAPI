@@ -14,29 +14,24 @@ module.exports = class UserController {
 
         // check if there's missing information
         if(!name){
-            res.status(400).json({message: "Necessário preencher o nome."});
-            return;
+            return res.status(400).json({message: "Necessário preencher o nome."});
         }
         if(!email){
-            res.status(400).json({message: "Necessário preencher o e-mail."});
-            return;
+            return res.status(400).json({message: "Necessário preencher o e-mail."});
         }
         if(!password){
-            res.status(400).json({message: "Necessário preencher a senha."});
-            return;
+            return res.status(400).json({message: "Necessário preencher a senha."});
         }
 
         // check if email is already being used
         const checkUser = await User.findOne({where: {email: email}});
         if(checkUser){
-            res.status(409).json({message: "E-mail já em uso."});
-            return;
+            return res.status(409).json({message: "E-mail já em uso."});
         }
 
         // check if passwords match
         if(password !== confirmPassword){
-            res.status(400).json({message: "As senhas não batem."});
-            return;
+            return res.status(400).json({message: "As senhas não batem."});
         }
 
         // create password
@@ -65,18 +60,16 @@ module.exports = class UserController {
 
         // check if there's missing information
         if(!email){
-            res.status(400).json({message: "Necessário preencher o e-mail."});
-            return;
+            return res.status(400).json({message: "Necessário preencher o e-mail."});
         }
         if(!password){
-            res.status(400).json({message: "Necessário preencher a senha."});
-            return;
+            return res.status(400).json({message: "Necessário preencher a senha."});
         }
 
         //check if user exists
         const user = await User.findOne({where: {email: email}});
         if(!user){
-            res.status(404).json({
+            return res.status(404).json({
                 message: "Usuário não encontrado."
             })
         }
@@ -84,7 +77,7 @@ module.exports = class UserController {
         // check password
         const checkPassword = await bcrypt.compare(String(password), String(user.password));
         if(!checkPassword){
-            res.status(401).json({
+            return res.status(401).json({
                 message: "Senha inválida."
             })
         }
@@ -108,29 +101,18 @@ module.exports = class UserController {
 
     }
 
-    static async list(req, res){
-
-        try {
-            const users = await User.findAll({raw: true});
-            res.json(users);
-
-        } catch (error) {
-            res.json({
-                message: "Erro ao listar usuários",
-            });
-        }
-    }
-
     static async getUser(req, res){
+
         const id = req.params.id;
+
+        // check if user exists
         const user = await User.findOne({where: {id: id}}, {raw: true});
         if(!user){
-            res.json({
+            return res.status(404).json({
                 message: "Usuário não encontrado."
             });
-            return;
         }
-        res.json(user);
+        res.status(200).json(user);
     }
 
 }
