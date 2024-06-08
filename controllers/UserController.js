@@ -1,10 +1,16 @@
 const User = require("../models/User");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 module.exports = class UserController {
 
-    static async create(req, res){
+    static async register(req, res){
 
-        const {name, email, password, confirmPassword} = req.body;
+        const name = req.body.name.trim();
+        const email = req.body.email.trim();
+        const password = req.body.password.trim();
+        const confirmPassword = req.body.confirmPassword.trim();
 
         // check if there's missing information
         if(!name){
@@ -33,16 +39,73 @@ module.exports = class UserController {
             return;
         }
 
+        // create password
+        const salt = await bcrypt.genSalt(12);
+        const passwordhash = await bcrypt.hash(password, salt);
+
         // create user in db
-        const user = {name, email, password}
+        const user = {
+            name, 
+            email, 
+            password: passwordhash
+        }
 
         try {
             await User.create(user);
             res.status(201).json({message: "Usuário criado com sucesso!"});
             
         } catch (error) {
-            res.status(500).json({message: "Erro ao criar o usuário"});
+            res.status(500).json({message: "Erro ao criar o usuário. Tente novamente mais tarde."});
         }
+    }
+
+    static async login(req, res){
+
+        const { email, password } = req.body;
+
+        // check if there's missing information
+        if(!email){
+            res.status(400).json({message: "Necessário preencher o e-mail."});
+            return;
+        }
+        if(!password){
+            res.status(400).json({message: "Necessário preencher a senha."});
+            return;
+        }
+
+        //check if user exists
+        const user = await User.findOne({where: {email: email}});
+        if(!user){
+            res.status(404).json({
+                message: "Usuário não encontrado."
+            })
+        }
+
+        // check password
+        const checkPassword = await bcrypt.compare(String(password), String(user.password));
+        if(!checkPassword){
+            res.status(401).json({
+                message: "Senha inválida."
+            })
+        }
+
+        // login
+        try {
+            const secret = process.env.SECRET;
+            const token = jwt.sign({id: user.id}, secret);
+
+            res.status(200).json({
+                message: "Login realizado com sucesso.",
+                token
+            })
+            
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({
+                message: "Erro ao efetuar login. Tente novamente mais tarde."
+            })
+        }
+
     }
 
     static async list(req, res){
