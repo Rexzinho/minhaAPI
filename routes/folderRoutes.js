@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const FolderController = require("../controllers/FolderController");
-const checkUser = require("../middleware/checkUser");
+const checkTokenByUser = require("../middleware/checkTokenByUser");
 
 module.exports = router;
 
-router.post("/create", checkUser, FolderController.create);
+router.post("/create", checkTokenByUser, FolderController.create);

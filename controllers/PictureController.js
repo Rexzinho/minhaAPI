@@ -9,7 +9,7 @@ module.exports = class PictureController{
 
         if(!file){
             res.json({
-                message: "Pasta não encontrada."
+                message: "File não encontrado."
             });
             return;
         }

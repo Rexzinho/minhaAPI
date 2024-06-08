@@ -2,7 +2,7 @@ require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
-module.exports = function checkToken(req, res, next){
+module.exports = function checkTokenByUser(req, res, next){
 
     const UserId = req.body.UserId;
 
@@ -18,7 +18,12 @@ module.exports = function checkToken(req, res, next){
     try {
         const secret = process.env.SECRET;
         jwt.verify(token, secret, async (err, decodedToken) => {
-            if(decodedToken.id !== UserId){
+            if (err) {
+                return res.status(400).json({
+                    message: "Token inválido."
+                });
+            }
+            if (decodedToken.id !== UserId) {
                 return res.status(400).json({
                     message: "Token de usuário inválido."
                 });
