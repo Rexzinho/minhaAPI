@@ -1,13 +1,13 @@
 const Picture = require("../models/Picture");
-const Folder = require("../models/Folder");
+const File = require("../models/File");
 
 module.exports = class PictureController{
     static async create(req, res){
 
-        const FolderId = req.body.FolderId;
-        const folder = await Folder.findOne({where: {id: FolderId}});
+        const FileId = req.body.FileId;
+        const file = await File.findOne({where: {id: FileId}});
 
-        if(!folder){
+        if(!file){
             res.json({
                 message: "Pasta não encontrada."
             });
@@ -18,7 +18,7 @@ module.exports = class PictureController{
             const picture = {
                 name: req.body.name,
                 src: req.file.path,
-                FolderId,
+                FileId,
             };
 
             await Picture.create(picture);

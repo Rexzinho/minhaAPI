@@ -6,7 +6,9 @@ const db = require("./db");
 // routes
 const userRoutes = require("./routes/userRoutes");
 const folderRoutes = require("./routes/folderRoutes");
+const fileRoutes = require("./routes/fileRoutes");
 const pictureRoutes = require("./routes/pictureRoutes");
+const scriptRoutes = require("./routes/scriptRoutes");
 
 // middleware
 app.use(
@@ -19,7 +21,9 @@ app.use(express.json());
 // config routes
 app.use("/user", userRoutes);
 app.use("/folder", folderRoutes);
+app.use("/file", fileRoutes);
 app.use("/picture", pictureRoutes);
+app.use("/script", scriptRoutes);
 
 db
     //.sync({force: true})

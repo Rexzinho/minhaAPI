@@ -112,7 +112,7 @@ module.exports = class UserController {
                 message: "Usuário não encontrado."
             });
         }
-        res.status(200).json(user);
+        res.status(200).json({user});
     }
 
 }

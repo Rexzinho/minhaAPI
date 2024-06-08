@@ -2,20 +2,20 @@ const { DataTypes } = require("sequelize");
 const db = require("../db");
 const File = require("../models/File");
 
-const Picture = db.define("Picture", {
+const Script = db.define("Script", {
     name: {
         type: DataTypes.STRING,
         require: true,
         allowNull: false,
     },
-    src: {
-        type: DataTypes.STRING,
+    content: {
+        type: DataTypes.TEXT,
         require: true,
         allowNull: false,
-    }
+    },
 });
 
-Picture.belongsTo(File);
-File.hasOne(Picture);
+Script.belongsTo(File);
+File.hasOne(Script);
 
-module.exports = Picture; 
+module.exports = Script;
